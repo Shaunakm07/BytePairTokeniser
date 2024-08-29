@@ -50,46 +50,41 @@ def find_lexically_highest(byte_pairs):
     
     return "".join(heighest_lexical), heighest_lexical
 
-def merge_word_count(word_counts, heighest_lexical):
-    new_word_counts = {}
-
-    for k,v in word_counts.items():
-        k = list(k)
-        i = 0
-        while i < (len(k) - 1):
-            pairs = "".join(k[i] + k[i + 1])
-            if pairs == heighest_lexical:
-                k[i] = heighest_lexical
-                k.pop(i + 1)
-                i += 1
-            i += 1
-        new_word_counts[tuple(k)] = v
-    return new_word_counts
+def merge_word_count(byte_pairs, heighest_lexical):
+    new_byte_pairs = {}
+    for k,v in byte_pairs.items():
+        v1, v2 = k
+        if v1 == heighest_lexical[1]:
+            v1 = heighest_lexical
+        elif v2 == heighest_lexical[0]:
+            v2 = heighest_lexical
+        new_byte_pairs[(v1, v2)] = v
+    return new_byte_pairs
         
 def train_tokeniser(file, vocab_size, special_tokens):
     f = open(file, "r")
-    #text = f.read()
+    text = f.read()
     merges = []
 
     pre_tokenised = pre_tokenise(text)
     corpus = create_corpus(special_tokens)
     word_counts = get_word_counts(pre_tokenised)
-    
+    byte_pairs = find_byte_pairs(word_counts)
+
     while len(corpus) < vocab_size:
-        byte_pairs = find_byte_pairs(word_counts)
 
         heighest_lexical, merge = find_lexically_highest(byte_pairs)
         merges.append(merge)
         corpus.append(heighest_lexical)
     
-        merged = merge_word_count(word_counts, heighest_lexical)
-        word_counts = merged
+        merged = merge_word_count(byte_pairs, heighest_lexical)
+        byte_pairs = merged
 
     return ({i:c for i,c in enumerate(list(set(corpus)))}, merges)
 
 
 start_time = time.time()
-vocab, merges = train_tokeniser("text.txt", 260, [])
+vocab, merges = train_tokeniser("text.txt", 500, [])
 print(merges)
 end_time = time.time()
 
