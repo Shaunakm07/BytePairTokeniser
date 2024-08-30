@@ -3,7 +3,7 @@ import time
 
 PAT = r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"""
 
-def train_bpe(input_file, vocab_size, special_tokens):
+def train_tokeniser(input_file, vocab_size, special_tokens):
     pre_tokensied = re.findall(PAT, open(input_file).read())
     merges = []
     vocab = special_tokens
@@ -29,7 +29,6 @@ def train_bpe(input_file, vocab_size, special_tokens):
         for k,v in byte_pairs.items():
             if v == max_val:
                 max_list.append(k)
-
         heighest_lexical = max(max_list)
         merges.append(heighest_lexical)
         joined = heighest_lexical[0] + heighest_lexical[1]
@@ -52,7 +51,6 @@ def train_bpe(input_file, vocab_size, special_tokens):
                     
                     if i < len(word) - 2:
                         next_pairs = (word[i + 1], word[i + 2])
-                        print(next_pairs)
                         new_byte_pairs[next_pairs] = new_byte_pairs.get(next_pairs, byte_pairs[next_pairs]) - v
                         new_byte_pairs[(joined, word[i + 2])] = new_byte_pairs.get((joined, word[i + 2]),0) + v
 
@@ -69,5 +67,6 @@ def train_bpe(input_file, vocab_size, special_tokens):
 
     return {i:s for i,s in enumerate(vocab)}, merges
 
-vocab, merges = train_bpe("text.txt", 263, ["<token>"])
+
+vocab, merges = train_tokeniser("text.txt", 500, ["<token>"])
 print(merges)
