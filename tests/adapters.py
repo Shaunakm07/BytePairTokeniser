@@ -8,6 +8,7 @@ import numpy.typing as npt
 import torch
 from src import bpe
 from src.rms_norm import rms_norm
+from src.gelu import GELU
 
 def run_positionwise_feedforward(
     d_model: int,
@@ -349,7 +350,7 @@ def run_gelu(in_features: torch.FloatTensor) -> torch.FloatTensor:
         FloatTensor of with the same shape as `in_features` with the output of applying
         GELU to each element.
     """
-    raise NotImplementedError
+    return GELU(in_features)
 
 
 def run_get_batch(
