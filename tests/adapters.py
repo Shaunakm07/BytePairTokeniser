@@ -9,6 +9,8 @@ import torch
 from src import bpe
 from src.rms_norm import rms_norm
 from src.gelu import GELU
+from src.ffn import FFN
+from src.softmax import softmax_operation
 
 def run_positionwise_feedforward(
     d_model: int,
@@ -45,8 +47,8 @@ def run_positionwise_feedforward(
     # You can also manually assign the weights
     # my_ffn.w1.weight.data = weights["w1.weight"]
     # my_ffn.w2.weight.data = weights["w2.weight"]
-    raise NotImplementedError
-
+    ffn = FFN(d_model, d_ff, weights)
+    return ffn(in_features)
 
 def run_scaled_dot_product_attention(
     K: torch.FloatTensor,
@@ -394,8 +396,7 @@ def run_softmax(in_features: torch.FloatTensor, dim: int) -> torch.FloatTensor:
         FloatTensor of with the same shape as `in_features` with the output of
         softmax normalizing the specified `dim`.
     """
-    raise NotImplementedError
-
+    return softmax_operation(in_features, dim)
 
 def run_cross_entropy(inputs: torch.FloatTensor, targets: torch.LongTensor):
     """Given a tensor of inputs and targets, compute the average cross-entropy
