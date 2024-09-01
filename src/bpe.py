@@ -139,7 +139,7 @@ class tokeniser():
         for token in encoded:
             text += vocab[token]
         return text
-
+'''
 # compute bpe vocab
 starttime = time.time()
 special_tokens = []
@@ -151,3 +151,4 @@ tknsr = tokeniser(vocab, merges, special_tokens)
 encoded = tknsr.encode("text.txt")
 decoded = tknsr.decode(encoded)
 print(f"tokeniser compression ratio: {str(len(list(decoded)) / len(encoded))}")
+'''
