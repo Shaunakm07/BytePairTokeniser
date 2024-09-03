@@ -11,6 +11,8 @@ from src.rms_norm import rms_norm
 from src.gelu import GELU
 from src.ffn import FFN
 from src.softmax import softmax_operation
+from src.scaled_dot_product_attention import scaled_dot_product_attention
+from src.multihead_self_attention import multihead_self_attention
 
 def run_positionwise_feedforward(
     d_model: int,
@@ -89,7 +91,7 @@ def run_scaled_dot_product_attention(
         with the output of running your scaled dot product attention
         implementation with the provided key, query, and value tensors.
     """
-    raise NotImplementedError
+    return scaled_dot_product_attention(K, Q, V, mask, pdrop)
 
 
 def run_multihead_self_attention(
@@ -139,8 +141,14 @@ def run_multihead_self_attention(
         torch.FloatTensor with the output of running your optimized, batched multi-headed attention
         implementation with the given QKV projection weights and input features.
     """
-    raise NotImplementedError
+    multihead_attention = multihead_self_attention(d_model, num_heads, attn_pdrop)
 
+    print(weights[f"q_heads.{0}.weight"].shape)
+    print(multihead_attention.q_weights.weight.data.shape)
+
+
+    multihead_attention.o_weights.weight.data = weights["output_proj.weight"]
+    return multihead_attention(in_features)
 
 def run_transformer_block(
     d_model: int,
