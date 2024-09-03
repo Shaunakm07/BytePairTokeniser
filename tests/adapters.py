@@ -143,11 +143,6 @@ def run_multihead_self_attention(
     """
     multihead_attention = multihead_self_attention(d_model, num_heads, attn_pdrop)
 
-    print(weights[f"q_heads.{0}.weight"].shape)
-    print(multihead_attention.q_weights.weight.data.shape)
-
-
-    multihead_attention.o_weights.weight.data = weights["output_proj.weight"]
     return multihead_attention(in_features)
 
 def run_transformer_block(
